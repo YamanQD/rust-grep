@@ -24,3 +24,39 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 	println!("File read:\n{}", content);
 	Ok(())
 }
+
+fn search<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
+	vec![]
+}
+
+#[cfg(test)]
+#[test]
+fn one_result() {
+	let content = "\
+Roses are red, violets are blue
+This is only for testing purposes
+But so are you";
+	let query = "for";
+
+	assert_eq!(
+		search(query, content),
+		vec!["This is only for testing purposes"]
+	);
+}
+
+#[test]
+fn two_results() {
+	let content = "\
+Roses are red, violets are blue
+This is only for testing purposes
+But so are you";
+	let query = "oses";
+
+	assert_eq!(
+		search(query, content),
+		vec![
+			"Roses are red, violets are blue",
+			"This is only for testing purposes"
+		]
+	);
+}
