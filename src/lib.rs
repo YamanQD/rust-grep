@@ -39,33 +39,37 @@ fn search<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
 }
 
 #[cfg(test)]
-#[test]
-fn one_result() {
-	let content = "\
+mod tests {
+	use super::*;
+
+	#[test]
+	fn one_result() {
+		let content = "\
 Roses are red, violets are blue
 This is only for testing purposes
 But so are you";
-	let query = "for";
+		let query = "for";
 
-	assert_eq!(
-		search(query, content),
-		vec!["This is only for testing purposes"]
-	);
-}
+		assert_eq!(
+			search(query, content),
+			vec!["This is only for testing purposes"]
+		);
+	}
 
-#[test]
-fn two_results() {
-	let content = "\
+	#[test]
+	fn two_results() {
+		let content = "\
 Roses are red, violets are blue
 This is only for testing purposes
 But so are you";
-	let query = "oses";
+		let query = "oses";
 
-	assert_eq!(
-		search(query, content),
-		vec![
-			"Roses are red, violets are blue",
-			"This is only for testing purposes"
-		]
-	);
+		assert_eq!(
+			search(query, content),
+			vec![
+				"Roses are red, violets are blue",
+				"This is only for testing purposes"
+			]
+		);
+	}
 }
