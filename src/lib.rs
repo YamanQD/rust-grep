@@ -21,7 +21,7 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 	let content = fs::read_to_string(config.filename)?;
-	for line in search_case_sensitive(&config.query, &content) {
+	for line in search_case_insensitive(&config.query, &content) {
 		println!("{}", line);
 	}
 	Ok(())
@@ -32,6 +32,18 @@ fn search_case_sensitive<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
 
 	for line in content.lines() {
 		if line.contains(query) {
+			result.push(line);
+		}
+	}
+	result
+}
+
+fn search_case_insensitive<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
+	let query = query.to_lowercase();
+	let mut result = Vec::new();
+
+	for line in content.lines() {
+		if line.to_lowercase().contains(&query) {
 			result.push(line);
 		}
 	}
@@ -67,6 +79,23 @@ But so are you";
 		assert_eq!(
 			search_case_sensitive(query, content),
 			vec!["Roses are red, violets are blue"]
+		);
+	}
+
+	#[test]
+	fn case_insensitive() {
+		let query = "oses";
+		let content = "\
+Roses are red, violets are blue
+This is only for testing purpOsEs
+But so are you";
+
+		assert_eq!(
+			search_case_insensitive(query, content),
+			vec![
+				"Roses are red, violets are blue",
+				"This is only for testing purpOsEs"
+			]
 		);
 	}
 }
