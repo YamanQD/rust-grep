@@ -21,13 +21,13 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 	let content = fs::read_to_string(config.filename)?;
-	for line in search(&config.query, &content) {
+	for line in search_case_sensitive(&config.query, &content) {
 		println!("{}", line);
 	}
 	Ok(())
 }
 
-fn search<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
+fn search_case_sensitive<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
 	let mut result = Vec::new();
 
 	for line in content.lines() {
@@ -43,33 +43,30 @@ mod tests {
 	use super::*;
 
 	#[test]
-	fn one_result() {
-		let content = "\
-Roses are red, violets are blue
-This is only for testing purposes
-But so are you";
-		let query = "for";
-
-		assert_eq!(
-			search(query, content),
-			vec!["This is only for testing purposes"]
-		);
-	}
-
-	#[test]
-	fn two_results() {
-		let content = "\
-Roses are red, violets are blue
-This is only for testing purposes
-But so are you";
+	fn case_sensitive() {
 		let query = "oses";
 
+		let content = "\
+Roses are red, violets are blue
+This is only for testing purposes
+But so are you";
+
 		assert_eq!(
-			search(query, content),
+			search_case_sensitive(query, content),
 			vec![
 				"Roses are red, violets are blue",
 				"This is only for testing purposes"
 			]
+		);
+
+		let content = "\
+Roses are red, violets are blue
+This is only for testing purpOsEs
+But so are you";
+
+		assert_eq!(
+			search_case_sensitive(query, content),
+			vec!["Roses are red, violets are blue"]
 		);
 	}
 }
